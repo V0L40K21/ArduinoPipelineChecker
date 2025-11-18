@@ -62,7 +62,7 @@ void http_request() {
     return;
   }
   JsonArray arr = doc.as<JsonArray>();
-  for (int i = 0; i < arr.size() && i < 6; i++) {
+  for (int i = 0; i < arr.size() && i < 8; i++) {
     const char *title = arr[i]["title"];
     const char *status = arr[i]["status"];
     oled.print(title);
