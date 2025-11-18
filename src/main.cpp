@@ -5,6 +5,7 @@
 #include <Wifi.h>
 
 #include "env.h"
+#include "http.h"
 #include "wifi_manager.h"
 
 GyverOLED<SSD1306_128x64> oled;
@@ -15,6 +16,7 @@ void setup() {
   oled.clear();
   oled.home();
   wifi_init();
+  http_request();
 }
 
 void loop() {
