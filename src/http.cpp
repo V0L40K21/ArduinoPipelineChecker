@@ -1,5 +1,6 @@
 #include "http.h"
 #include "env.h"
+#include "icons.h"
 #include "wifi_manager.h"
 
 #include <ArduinoJson.h>
@@ -14,38 +15,28 @@ static WiFiClient wifiClient;
 static ghttp::Client http(wifiClient, SERVER_HOST, SERVER_PORT);
 
 void http_request() {
-  if (!wifi_isConnected()) {
-    oled.clear();
-    oled.home();
-    oled.println("WiFi lost...");
-    delay(1000);
-    wifi_init();
-    return;
-  }
   if (!http.connect()) {
-    oled.clear();
-    oled.home();
+    myClear();
     oled.println("HTTP connect ERR");
     oled.update();
     return;
   }
   if (!http.request(SERVER_PATH)) {
-    oled.clear();
-    oled.home();
+    myClear();
     oled.println("req send FAIL");
     oled.update();
     return;
   }
   auto resp = http.getResponse();
-  oled.clear();
-  oled.home();
   if (!resp) {
+    myClear();
     oled.println("No response");
     oled.update();
     return;
   }
   int code = resp.code();
   if (code != 200) {
+    myClear();
     oled.print("HTTP code: ");
     oled.println(code);
     oled.update();
@@ -54,20 +45,12 @@ void http_request() {
   String body = resp.body().readString();
   JsonDocument doc;
   auto err = deserializeJson(doc, body);
-  oled.clear();
-  oled.home();
   if (err) {
+    myClear();
     oled.println("JSON ERR");
     oled.update();
     return;
   }
   JsonArray arr = doc.as<JsonArray>();
-  for (int i = 0; i < arr.size() && i < 8; i++) {
-    const char *title = arr[i]["title"];
-    const char *status = arr[i]["status"];
-    oled.print(title);
-    oled.print(": ");
-    oled.println(status);
-    oled.update();
-  }
+  printPipes(arr);
 }

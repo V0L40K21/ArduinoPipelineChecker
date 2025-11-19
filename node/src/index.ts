@@ -22,7 +22,7 @@ app.get('/check', async (req: Request, res: Response<IResponseData[]>) => {
 			.get<IProject[]>(`${process.env.GITLAB_HOST}/api/v4/projects`, {
 				httpsAgent,
 				headers: {Authorization: `Bearer ${process.env.GITLAB_TOKEN}`},
-				params: {membership: true, per_page: 8, order_by: 'last_activity_at', sort: 'desc'}
+				params: {membership: true, per_page: 5, order_by: 'last_activity_at', sort: 'desc'}
 			})
 			.then(({data}) =>
 				data.map(project => ({
